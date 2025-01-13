@@ -2,18 +2,26 @@ using System.Text.Json;
 
 namespace MarketScrubber.Services;
 
-public class CookiesConfig
+public class Config
 {
     public string Cookies { get; set; }
     public string BaseUrlBuyers { get; set; }
     public string BaseUrlSellers { get; set; }
-    public static CookiesConfig GetConfig()
+
+    public int TimeSleep { get; set; } = 500;
+    public static Config GetConfig()
     {
         try
         {
             var config = File.ReadAllText("./cookies.json");
-            var cookiesConfig = JsonSerializer.Deserialize<CookiesConfig>(config);
-            
+            var cookiesConfig = JsonSerializer.Deserialize<Config>(config);
+
+            if (string.IsNullOrEmpty(cookiesConfig.Cookies)
+                || string.IsNullOrEmpty(cookiesConfig.BaseUrlBuyers) ||
+                string.IsNullOrEmpty(cookiesConfig.BaseUrlSellers))
+            {
+                throw new Exception("Invalid config");
+            }
             return cookiesConfig;
         }
         catch (Exception ex)

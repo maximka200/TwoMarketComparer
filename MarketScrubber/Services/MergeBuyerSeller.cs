@@ -7,7 +7,6 @@ public class MergeBuyerSeller
 {
     private IBuyMarketParser buyer;
     private ISellMarketParser seller;
-    private const int sleepTime = 500; // ms, recommended don't change on less value
     
     public MergeBuyerSeller(IBuyMarketParser buyer, ISellMarketParser seller)
     {
@@ -25,7 +24,7 @@ public class MergeBuyerSeller
         return seller.GetMostPopularItems(count, client, baseUrl);
     }
     
-    public List<Product> GetMergedItems(int volume, HttpClient client, float yuanToRub, CookiesConfig config)
+    public List<Product> GetMergedItems(int volume, HttpClient client, float yuanToRub, Config config)
     {
         try
         {
@@ -35,14 +34,15 @@ public class MergeBuyerSeller
             {
                 throw new Exception("No items found from seller");
             }
-            var writer = ConsoleWriter.SimulateLoadingBar(count - 1);
             var productList = new List<Product>();
+            var counter = 1; // for progress bar
             foreach (var item in items.Items)
             {
                 var name = item.MarketHashName;
-                Thread.Sleep(sleepTime);
+                Thread.Sleep(config.TimeSleep);
                 var buyerItem = GetItemsByNameFromBuyer(name, client, config.BaseUrlBuyers);
-                writer();
+                ConsoleWriter.SimulateLoadingBarV2(count, counter);
+                counter++;
                 if (buyerItem == null || item.Price == null)
                 {
                     // Console.WriteLine($"Unfortunatelly, we can't find price on {name}");

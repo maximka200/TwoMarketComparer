@@ -5,7 +5,7 @@ namespace CSMarketBuff163SkinsParser;
 
 public class Buff163Parser : IBuyMarketParser
 {
-    private readonly CookiesConfig config;
+    private readonly Config config;
     
     private const string UrlPiece = "game=csgo&page_num=1&search=";
     

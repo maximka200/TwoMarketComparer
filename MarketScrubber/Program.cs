@@ -9,7 +9,7 @@ namespace Buff163ItemSearch
         {
             try
             {
-                var conf = CookiesConfig.GetConfig();
+                var conf = Config.GetConfig();
                 HttpClient httpClient = new HttpClient();
                 conf.AddHeaders(httpClient);
                 conf.AddCookiesToReq(httpClient);

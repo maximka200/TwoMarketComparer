@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Services\CookiesConfig.cs">
+      <Compile Update="Services\Config.cs">
         <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       </Compile>
     </ItemGroup>
