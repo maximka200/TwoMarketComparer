@@ -39,8 +39,8 @@ public class MergeBuyerSeller
             productList.Add(new Product
             {
                 Name = item.MarketHashName,
-                PriceYuan = buyerItem.Price,
-                PriceRub = item.Price,
+                PriceYuan = ChangeDoteOnComme(buyerItem.Price),
+                PriceRub = ChangeDoteOnComme(item.Price),
                 CoefficientBenefit = TryParseCoefficient(buyerItem.Price, item.Price, yuanToRub),
                 Volume = item.Volume,
                 UrlBuy = buyerItem.UrlBuy,
@@ -48,6 +48,11 @@ public class MergeBuyerSeller
             });
         }
         return productList;
+    }
+    
+    public static string ChangeDoteOnComme(string price)
+    {
+        return price.Replace(".", ",");
     }
     
     private string TryParsePrice(string price)

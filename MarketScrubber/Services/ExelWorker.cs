@@ -12,7 +12,7 @@ public class ExelWorker
         {
             var sheet = package.Workbook.Worksheets.Add("Sheet1");
             
-            var headers = new[] { "Name", "PriceYuan", "PriceRub", "СoefficientBenefit", "BuyCount", "UrlBuy", "UrlSell" };
+            var headers = new[] { "Name", "Price Yuan", "Price Rub", "Сoefficient Benefit", "Buy Count", "Url Buy", "Url Sell" };
             
             for (var i = 0; i < headers.Length; i++)
             {
