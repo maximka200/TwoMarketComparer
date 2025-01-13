@@ -1,8 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using buff163;
+﻿using buff163;
 using CSMarketBuff163SkinsParser;
 
 namespace Buff163ItemSearch
@@ -17,8 +13,8 @@ namespace Buff163ItemSearch
                 HttpClient httpClient = new HttpClient();
                 conf.AddHeaders(httpClient);
                 conf.AddCookiesToReq(httpClient);
-                var csmark = new Buff163Parser(conf);
-                var buyer = new CSMarketParser(conf);
+                var csmark = new Buff163Parser();
+                var buyer = new CSMarketParser();
                 
                 Console.WriteLine("Enter min volume:");
                 var minVolume = int.Parse(Console.ReadLine(), System.Globalization.CultureInfo.InvariantCulture);
@@ -26,7 +22,7 @@ namespace Buff163ItemSearch
                 var yanToRub = float.Parse(Console.ReadLine(), System.Globalization.CultureInfo.InvariantCulture);
                 
                 var merged = new MergeBuyerSeller(csmark, buyer);
-                var products = merged.GetMergedItems(minVolume, httpClient, yanToRub);
+                var products = merged.GetMergedItems(minVolume, httpClient, yanToRub, conf);
                 
                 ExelWorker.CreateExcelFile("./test.xlsx", products);
             } 

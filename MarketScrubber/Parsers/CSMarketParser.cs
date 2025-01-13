@@ -1,30 +1,22 @@
 using System.Text.Json;
-using buff163;
-using NUnit.Framework;
 
 namespace CSMarketBuff163SkinsParser;
 
 public class CSMarketParser : ISellMarketParser
 {
-    private readonly CookiesConfig config;
-    public CSMarketParser(CookiesConfig config)
+    public ItemsRoot GetMostPopularItems(int volume, HttpClient client, string baseUrl)
     {
-        this.config = config;
-    }
-    
-    public ItemsRoot GetMostPopularItems(int volume, HttpClient client)
-    {
+        var op = System.Reflection.MethodBase.GetCurrentMethod().Name;
         try
         {
-            var url = config.BaseUrlSellers;
-            if (url == null || url == "")
+            if (baseUrl == null || baseUrl == "")
             {
                 throw new Exception("Invalid base url");
             }
-            var response = client.GetAsync(url).Result;
+            var response = client.GetAsync(baseUrl).Result;
             if (!response.IsSuccessStatusCode)
             {
-                throw new Exception($"Status code: {response.StatusCode}");
+                throw new Exception($"Unexpected status code: {response.StatusCode}");
             }
             
             var responseBody = response.Content.ReadAsStringAsync().Result;
@@ -39,7 +31,7 @@ public class CSMarketParser : ISellMarketParser
         }
         catch (Exception ex)
         {
-            throw new Exception($"Client error: {ex.Message}", ex);
+            throw new Exception($"{op}: Error: {ex.Message}", ex);
         }
     }
 

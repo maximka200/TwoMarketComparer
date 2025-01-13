@@ -7,22 +7,36 @@ public class Buff163Parser : IBuyMarketParser
 {
     private readonly CookiesConfig config;
     
-    public Buff163Parser(CookiesConfig config)
-    {
-        this.config = config;
-    }
+    private const string UrlPiece = "game=csgo&page_num=1&search=";
+    
+    private const string MinPriceProperty = "buy_max_price";
 
-    public Buyer GetItemByName(string name, HttpClient client)
+    public Buyer? GetItemByName(string name, HttpClient client, string baseUrl)
     {
-        var queryParams = $"game=csgo&page_num=1&search={Uri.EscapeDataString(name)}";
-        var requestUrl = $"{config.BaseUrlBuyers}?{queryParams}";
-
+        var op = nameof(GetItemByName);
         try
         {
+            if (baseUrl == null || baseUrl == "")
+            {
+                throw new Exception("Invalid base url");
+            }
+
+            var queryParams = $"{UrlPiece}{Uri.EscapeDataString(name)}";
+            var requestUrl = $"{baseUrl}?{queryParams}";
+
             var response = client.GetAsync(requestUrl).Result;
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Unexpected status code: {response.StatusCode}");
+            }
+
             var responseText = response.Content.ReadAsStringAsync().Result;
-            Console.WriteLine(name);
             var price = GetMinPriceFromJson(responseText);
+            if (price == null)
+            {
+                return null;
+            }
+            
             return new Buyer
             {
                 Name = name,
@@ -31,13 +45,13 @@ public class Buff163Parser : IBuyMarketParser
         }
         catch (Exception ex)
         {
-            throw new Exception($"Client error: {ex.Message}", ex);
+            throw new Exception($"{op}: Error: {ex.Message}", ex);
         }
     }
     
-    private static string GetMinPriceFromJson(string jsonResponse)
+    private static string? GetMinPriceFromJson(string jsonResponse)
     {
-        var op = "GetMinPriceFromJson";
+        var op = nameof(GetMinPriceFromJson);
         try
         {
             var root = JsonDocument.Parse(jsonResponse).RootElement;
@@ -47,17 +61,17 @@ public class Buff163Parser : IBuyMarketParser
             {
                 var firstItem = items[0];
 
-                if (firstItem.TryGetProperty("sell_min_price", out var buyMaxPrice))
+                if (firstItem.TryGetProperty(MinPriceProperty, out var buyMaxPrice))
                 {
                     return buyMaxPrice.GetString();
                 }
             }
+
+            return null;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"{op}: Error serialize JSON: {ex.Message}");
+            throw new Exception($"{op}: Error serialize JSON: {ex.Message}");
         }
-
-        return null;
     }
 }
