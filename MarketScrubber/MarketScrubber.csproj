@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="EPPlus" Version="7.5.2" />
+      <PackageReference Include="MSTest.Sdk" Version="3.7.0" />
+      <PackageReference Include="Nunit.Framework.TestCaseStorage" Version="1.0.1" />
+      <PackageReference Include="OfficeOpenXml.Core.ExcelPackage" Version="1.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="cookies.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Services\CookiesConfig.cs">
+        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      </Compile>
+    </ItemGroup>
+
+</Project>
