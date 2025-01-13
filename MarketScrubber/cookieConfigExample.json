@@ -1,0 +1,6 @@
+{
+  "Cookies": "Device-Id=XXXXXX; csrf_token=XXXXX; Locale-Supported=ru; game=csgo; session=XXX",
+  "BaseUrlBuyers" : "https://buff.163.com/api/market/goods",
+  "BaseUrlSellers" : "https://market.csgo.com/api/v2/prices/RUB.json",
+  "TimeSleep": 100
+}
