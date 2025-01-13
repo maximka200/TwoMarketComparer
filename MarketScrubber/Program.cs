@@ -1,5 +1,5 @@
-﻿using buff163;
-using CSMarketBuff163SkinsParser;
+﻿using CSMarketBuff163SkinsParser;
+using MarketScrubber.Services;
 
 namespace Buff163ItemSearch
 {
@@ -15,21 +15,22 @@ namespace Buff163ItemSearch
                 conf.AddCookiesToReq(httpClient);
                 var csmark = new Buff163Parser();
                 var buyer = new CSMarketParser();
-                
+
                 Console.WriteLine("Enter min volume:");
                 var minVolume = int.Parse(Console.ReadLine(), System.Globalization.CultureInfo.InvariantCulture);
                 Console.WriteLine("Enter Yuan to Rub:");
                 var yanToRub = float.Parse(Console.ReadLine(), System.Globalization.CultureInfo.InvariantCulture);
-                
+
                 var merged = new MergeBuyerSeller(csmark, buyer);
                 var products = merged.GetMergedItems(minVolume, httpClient, yanToRub, conf);
-                
+
                 ExelWorker.CreateExcelFile("./test.xlsx", products);
-            } 
+            }
             catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
             }
         }
+        
     }
 }

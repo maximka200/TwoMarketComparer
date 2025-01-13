@@ -1,10 +1,6 @@
-using System;
-using System.IO;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using Microsoft.Extensions.Configuration;
 
-namespace buff163;
+namespace MarketScrubber.Services;
 
 public class CookiesConfig
 {

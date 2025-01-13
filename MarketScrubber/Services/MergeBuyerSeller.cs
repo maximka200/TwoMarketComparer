@@ -1,12 +1,13 @@
 using System.Globalization;
-using buff163;
+using CSMarketBuff163SkinsParser;
 
-namespace CSMarketBuff163SkinsParser;
+namespace MarketScrubber.Services;
 
 public class MergeBuyerSeller
 {
     private IBuyMarketParser buyer;
     private ISellMarketParser seller;
+    private const int sleepTime = 500; // ms, recommended don't change on less value
     
     public MergeBuyerSeller(IBuyMarketParser buyer, ISellMarketParser seller)
     {
@@ -29,16 +30,22 @@ public class MergeBuyerSeller
         try
         {
             var items = GetMostPopularItems(volume, client, config.BaseUrlSellers);
-            Console.WriteLine("Success parsing data from seller");
+            var count = items.Items.Count();
+            if (count == 0)
+            {
+                throw new Exception("No items found from seller");
+            }
+            var writer = ConsoleWriter.SimulateLoadingBar(count - 1);
             var productList = new List<Product>();
             foreach (var item in items.Items)
             {
                 var name = item.MarketHashName;
-                Thread.Sleep(500);
+                Thread.Sleep(sleepTime);
                 var buyerItem = GetItemsByNameFromBuyer(name, client, config.BaseUrlBuyers);
+                writer();
                 if (buyerItem == null || item.Price == null)
                 {
-                    Console.WriteLine($"Unfortunatelly, we can't find price on {name}");
+                    // Console.WriteLine($"Unfortunatelly, we can't find price on {name}");
                     continue;
                 }
 

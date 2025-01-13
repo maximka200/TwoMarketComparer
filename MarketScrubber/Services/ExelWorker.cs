@@ -1,6 +1,7 @@
+using CSMarketBuff163SkinsParser;
 using OfficeOpenXml;
 
-namespace CSMarketBuff163SkinsParser;
+namespace MarketScrubber.Services;
 
 public class ExelWorker
 {

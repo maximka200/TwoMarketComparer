@@ -1,7 +1,7 @@
 using System.Text.Json;
-using CSMarketBuff163SkinsParser;
+using MarketScrubber.Services;
 
-namespace buff163;
+namespace CSMarketBuff163SkinsParser;
 
 public class Buff163Parser : IBuyMarketParser
 {
