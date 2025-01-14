@@ -14,21 +14,21 @@ public class MergeBuyerSeller
         this.seller = seller;
     }
 
-    private Buyer? GetItemsByNameFromBuyer(string itemName, HttpClient client, string baseUrl)
+    private async Task<Buyer?> GetItemsByNameFromBuyer(string itemName, HttpClient client, string baseUrl)
     {
-        return buyer.GetItemByName(itemName, client, baseUrl);
+        return await buyer.GetItemByNameAsync(itemName, client, baseUrl);
     }
 
-    private ItemsRoot GetMostPopularItems(int count, HttpClient client, string baseUrl)
+    private ItemsRoot GetMostPopularItems(int volume, float price, HttpClient client, string baseUrl)
     {
-        return seller.GetMostPopularItems(count, client, baseUrl);
+        return seller.GetMostPopularItems(volume, price, client, baseUrl);
     }
     
-    public List<Product> GetMergedItems(int volume, HttpClient client, float yuanToRub, Config config)
+    public async Task<List<Product>> GetMergedItemsAsync(int volume, float price, HttpClient client, float yuanToRub, Config config)
     {
         try
         {
-            var items = GetMostPopularItems(volume, client, config.BaseUrlSellers);
+            var items = GetMostPopularItems(volume, price, client, config.BaseUrlSellers);
             var count = items.Items.Count();
             if (count == 0)
             {
@@ -40,7 +40,7 @@ public class MergeBuyerSeller
             {
                 var name = item.MarketHashName;
                 Thread.Sleep(config.TimeSleep);
-                var buyerItem = GetItemsByNameFromBuyer(name, client, config.BaseUrlBuyers);
+                var buyerItem = await GetItemsByNameFromBuyer(name, client, config.BaseUrlBuyers);
                 ConsoleWriter.SimulateLoadingBarV2(count, counter);
                 counter++;
                 if (buyerItem == null || item.Price == null)

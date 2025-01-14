@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text.Json;
 using MarketScrubber.Services;
 
@@ -11,9 +12,9 @@ public class Buff163Parser : IBuyMarketParser
     
     private const string MinPriceProperty = "buy_max_price";
 
-    public Buyer? GetItemByName(string name, HttpClient client, string baseUrl)
+    public async Task<Buyer?> GetItemByNameAsync(string name, HttpClient client, string baseUrl)
     {
-        var op = nameof(GetItemByName);
+        var op = nameof(GetItemByNameAsync);
         try
         {
             if (baseUrl == null || baseUrl == "")
@@ -25,12 +26,17 @@ public class Buff163Parser : IBuyMarketParser
             var requestUrl = $"{baseUrl}?{queryParams}";
 
             var response = client.GetAsync(requestUrl).Result;
-            if (!response.IsSuccessStatusCode)
+            if (response.StatusCode == (HttpStatusCode)429)
+            {
+                Thread.Sleep(1000);
+                response = client.GetAsync(requestUrl).Result;
+            }
+            else if (!response.IsSuccessStatusCode)
             {
                 throw new Exception($"Unexpected status code: {response.StatusCode}");
             }
 
-            var responseText = response.Content.ReadAsStringAsync().Result;
+            var responseText = await response.Content.ReadAsStringAsync();
             var price = GetMinPriceFromJson(responseText);
             if (price == null)
             {
@@ -40,7 +46,8 @@ public class Buff163Parser : IBuyMarketParser
             return new Buyer
             {
                 Name = name,
-                Price = price
+                Price = price,
+                UrlBuy = requestUrl
             };
         }
         catch (Exception ex)

@@ -2,5 +2,5 @@ namespace CSMarketBuff163SkinsParser;
 
 public interface IBuyMarketParser
 {
-    public Buyer? GetItemByName(string name, HttpClient client, string baseUrl);
+    public Task<Buyer?> GetItemByNameAsync(string name, HttpClient client, string baseUrl);
 }

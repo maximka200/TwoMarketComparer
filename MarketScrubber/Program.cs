@@ -5,10 +5,13 @@ namespace Buff163ItemSearch
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             try
             {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.BackgroundColor = ConsoleColor.Blue;
+                
                 var conf = Config.GetConfig();
                 HttpClient httpClient = new HttpClient();
                 conf.AddHeaders(httpClient);
@@ -16,13 +19,15 @@ namespace Buff163ItemSearch
                 var csmark = new Buff163Parser();
                 var buyer = new CSMarketParser();
 
-                Console.WriteLine("Enter min volume:");
+                Console.WriteLine("Enter min volume (number of purchases per week):");
                 var minVolume = int.Parse(Console.ReadLine(), System.Globalization.CultureInfo.InvariantCulture);
-                Console.WriteLine("Enter Yuan to Rub:");
+                Console.WriteLine("Enter min price (rub):");
+                var minPrice = float.Parse(Console.ReadLine(), System.Globalization.CultureInfo.InvariantCulture);
+                Console.WriteLine("Enter yuan to rub:");
                 var yanToRub = float.Parse(Console.ReadLine(), System.Globalization.CultureInfo.InvariantCulture);
 
                 var merged = new MergeBuyerSeller(csmark, buyer);
-                var products = merged.GetMergedItems(minVolume, httpClient, yanToRub, conf);
+                var products = await merged.GetMergedItemsAsync(minVolume, minPrice, httpClient, yanToRub, conf);
 
                 ExelWorker.CreateExcelFile("./test.xlsx", products);
             }

@@ -1,10 +1,11 @@
+using System.Globalization;
 using System.Text.Json;
 
 namespace CSMarketBuff163SkinsParser;
 
 public class CSMarketParser : ISellMarketParser
 {
-    public ItemsRoot GetMostPopularItems(int volume, HttpClient client, string baseUrl)
+    public ItemsRoot GetMostPopularItems(int volume, float price, HttpClient client, string baseUrl)
     {
         var op = System.Reflection.MethodBase.GetCurrentMethod().Name;
         try
@@ -26,7 +27,8 @@ public class CSMarketParser : ISellMarketParser
             {
                 throw new Exception("Invalid parsing response");
             }
-            DeleteUnnecessary(items, volume);
+            DeleteUnnecessaryVolume(items, volume);
+            DeleteUnnecessaryPrice(items, price);
             return items;
         }
         catch (Exception ex)
@@ -34,12 +36,20 @@ public class CSMarketParser : ISellMarketParser
             throw new Exception($"{op}: Error: {ex.Message}", ex);
         }
     }
-
-    private static void DeleteUnnecessary(ItemsRoot itemsRoot, int volume)
+    
+    private static void DeleteUnnecessaryPrice(ItemsRoot itemsRoot, float price)
     {
         itemsRoot.Items = itemsRoot.Items
             .AsParallel()
-            .Where(item => int.TryParse(item.Volume, out var itemVolume) && itemVolume > volume)
+            .Where(item => float.TryParse(item.Price, CultureInfo.InvariantCulture, out var itemPrice) && itemPrice > price)
+            .ToList();
+    }
+
+    private static void DeleteUnnecessaryVolume(ItemsRoot itemsRoot, int volume)
+    {
+        itemsRoot.Items = itemsRoot.Items
+            .AsParallel()
+            .Where(item => int.TryParse(item.Volume, CultureInfo.InvariantCulture, out var itemVolume) && itemVolume > volume)
             .ToList();
     }
 }
