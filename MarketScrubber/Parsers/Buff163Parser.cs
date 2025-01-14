@@ -46,8 +46,7 @@ public class Buff163Parser : IBuyMarketParser
             return new Buyer
             {
                 Name = name,
-                Price = price,
-                UrlBuy = requestUrl
+                Price = price
             };
         }
         catch (Exception ex)

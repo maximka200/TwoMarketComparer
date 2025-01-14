@@ -33,7 +33,7 @@ namespace Buff163ItemSearch
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: " + ex.Message);
+                Console.WriteLine("\rError: " + ex.Message);
             }
         }
         

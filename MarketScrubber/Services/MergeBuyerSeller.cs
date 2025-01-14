@@ -1,19 +1,22 @@
 using System.Globalization;
+using System.Web;
 using CSMarketBuff163SkinsParser;
 
 namespace MarketScrubber.Services;
 
 public class MergeBuyerSeller
 {
-    private IBuyMarketParser buyer;
-    private ISellMarketParser seller;
-    
     public MergeBuyerSeller(IBuyMarketParser buyer, ISellMarketParser seller)
     {
         this.buyer = buyer;
         this.seller = seller;
     }
-
+    
+    private const string SearchUrlSeller = "https://market.csgo.com/ru/?search=";
+    private const string SearchUrlBuyer = "https://buff.163.com/market/csgo#game=csgo&page_num=1&tab=selling&search=";
+    private IBuyMarketParser buyer;
+    private ISellMarketParser seller;
+    
     private async Task<Buyer?> GetItemsByNameFromBuyer(string itemName, HttpClient client, string baseUrl)
     {
         return await buyer.GetItemByNameAsync(itemName, client, baseUrl);
@@ -49,6 +52,9 @@ public class MergeBuyerSeller
                     continue;
                 }
 
+                var sellerUrl = $"{SearchUrlSeller}{item.MarketHashName}";
+                var buyerUrl = $"{SearchUrlBuyer}{item.MarketHashName}";
+
                 productList.Add(new Product
                 {
                     Name = item.MarketHashName,
@@ -56,8 +62,8 @@ public class MergeBuyerSeller
                     PriceRub = ChangeDoteOnComme(item.Price),
                     CoefficientBenefit = TryParseCoefficient(buyerItem.Price, item.Price, yuanToRub),
                     Volume = item.Volume,
-                    UrlBuy = buyerItem.UrlBuy,
-                    UrlSell = item.UrlSell
+                    UrlBuy = buyerUrl,
+                    UrlSell = sellerUrl
                 });
             }
 

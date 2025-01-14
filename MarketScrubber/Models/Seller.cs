@@ -12,9 +12,6 @@ public class Item
 
     [JsonPropertyName("price")] 
     public string Price { get; set; } = "0";
-
-    [JsonPropertyName("url")] 
-    public string UrlSell { get; set; } = "-";
 }
 
 public class ItemsRoot

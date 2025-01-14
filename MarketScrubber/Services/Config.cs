@@ -13,7 +13,8 @@ public class Config
     {
         try
         {
-            var config = File.ReadAllText("./cookies.json");
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "./cookies.json");
+            var config =  File.ReadAllText(path);
             var cookiesConfig = JsonSerializer.Deserialize<Config>(config);
 
             if (string.IsNullOrEmpty(cookiesConfig.Cookies)

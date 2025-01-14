@@ -28,11 +28,13 @@ public class ExelWorker
                 sheet.Cells[i, 3].Value = prod.PriceRub;
                 sheet.Cells[i, 4].Value = prod.CoefficientBenefit;
                 sheet.Cells[i, 5].Value = prod.Volume;
-                sheet.Cells[i, 6].Value = prod.UrlBuy;
-                sheet.Cells[i, 7].Value = prod.UrlSell;
+                sheet.Cells[i, 6].Value = "url";
+                sheet.Cells[i, 7].Value = "url";
+                sheet.Cells[i, 6].Hyperlink = new Uri(prod.UrlBuy);
+                sheet.Cells[i, 7].Hyperlink = new Uri(prod.UrlSell);
             }
             
-            FileInfo file = new FileInfo(filePath);
+            FileInfo file = new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filePath));
             package.SaveAs(file);
         }
     }
