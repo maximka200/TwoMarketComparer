@@ -13,7 +13,7 @@ public class ExelWorker
         {
             var sheet = package.Workbook.Worksheets.Add("Sheet1");
             
-            var headers = new[] { "Name", "Price Yuan", "Price Rub", "Сoefficient Benefit", "Buy Count", "Url Buy", "Url Sell" };
+            var headers = new[] { "Name", "Price buff163 (yan)", "Price cs.go.market (rub)", "Coefficient benefit", "Buy count", "Url buy", "Url sell" };
             
             for (var i = 0; i < headers.Length; i++)
             {
@@ -28,8 +28,8 @@ public class ExelWorker
                 sheet.Cells[i, 3].Value = prod.PriceRub;
                 sheet.Cells[i, 4].Value = prod.CoefficientBenefit;
                 sheet.Cells[i, 5].Value = prod.Volume;
-                sheet.Cells[i, 6].Value = "url";
-                sheet.Cells[i, 7].Value = "url";
+                sheet.Cells[i, 6].Value = "click here";
+                sheet.Cells[i, 7].Value = "click here";
                 sheet.Cells[i, 6].Hyperlink = new Uri(prod.UrlBuy);
                 sheet.Cells[i, 7].Hyperlink = new Uri(prod.UrlSell);
             }

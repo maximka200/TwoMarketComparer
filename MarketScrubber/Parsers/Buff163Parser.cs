@@ -33,7 +33,7 @@ public class Buff163Parser : IBuyMarketParser
             }
             else if (!response.IsSuccessStatusCode)
             {
-                throw new Exception($"Unexpected status code: {response.StatusCode}");
+                return null;
             }
 
             var responseText = await response.Content.ReadAsStringAsync();

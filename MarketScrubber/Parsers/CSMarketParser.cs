@@ -41,7 +41,7 @@ public class CSMarketParser : ISellMarketParser
     {
         itemsRoot.Items = itemsRoot.Items
             .AsParallel()
-            .Where(item => float.TryParse(item.Price, CultureInfo.InvariantCulture, out var itemPrice) && itemPrice > price)
+            .Where(item => float.TryParse(item.Price, CultureInfo.InvariantCulture, out var itemPrice) && itemPrice >= price)
             .ToList();
     }
 
@@ -49,7 +49,7 @@ public class CSMarketParser : ISellMarketParser
     {
         itemsRoot.Items = itemsRoot.Items
             .AsParallel()
-            .Where(item => int.TryParse(item.Volume, CultureInfo.InvariantCulture, out var itemVolume) && itemVolume > volume)
+            .Where(item => int.TryParse(item.Volume, CultureInfo.InvariantCulture, out var itemVolume) && itemVolume >= volume)
             .ToList();
     }
 }
