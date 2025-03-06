@@ -5,6 +5,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <OutputPath>Release\</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>
@@ -19,11 +20,13 @@
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
     </ItemGroup>
-
+    
     <ItemGroup>
-      <Compile Update="Services\Config.cs">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </Compile>
+        <None Update="cookies.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+            <TargetPath>../config/appsettings.json</TargetPath>
+        </None>
     </ItemGroup>
 
 </Project>

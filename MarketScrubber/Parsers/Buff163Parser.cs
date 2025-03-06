@@ -37,7 +37,7 @@ public class Buff163Parser : IBuyMarketParser
             }
 
             var responseText = await response.Content.ReadAsStringAsync();
-            var price = GetMinPriceFromJson(responseText);
+            var price = GetMinPriceFromJson(responseText, name);
             if (price == null)
             {
                 return null;
@@ -55,29 +55,38 @@ public class Buff163Parser : IBuyMarketParser
         }
     }
     
-    private static string? GetMinPriceFromJson(string jsonResponse)
+    private static string? GetMinPriceFromJson(string jsonResponse, string name)
     {
         var op = nameof(GetMinPriceFromJson);
         try
         {
             var root = JsonDocument.Parse(jsonResponse).RootElement;
-        
+
             if (root.TryGetProperty("data", out var data) && data.TryGetProperty("items", out var items) &&
                 items.GetArrayLength() > 0)
             {
-                var firstItem = items[0];
+                JsonElement targetItem = items[0];
 
-                if (firstItem.TryGetProperty(MinPriceProperty, out var buyMaxPrice))
+                foreach (var item in items.EnumerateArray())
+                {
+                    if (item.TryGetProperty("name", out var nameInBuyer) && nameInBuyer.GetString() == name)
+                    {   
+                        targetItem = item;
+                        break;
+                    }
+                }
+
+                if (targetItem.TryGetProperty(MinPriceProperty, out var buyMaxPrice))
                 {
                     return buyMaxPrice.GetString();
                 }
             }
-
-            return null;
         }
         catch (Exception ex)
         {
             throw new Exception($"{op}: Error serialize JSON: {ex.Message}");
         }
+
+        return null;
     }
 }

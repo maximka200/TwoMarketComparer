@@ -29,6 +29,7 @@ public class MergeBuyerSeller
     
     public async Task<List<Product>> GetMergedItemsAsync(int volume, float price, HttpClient client, float yuanToRub, Config config)
     {
+        var op = nameof(GetMergedItemsAsync);
         try
         {
             var items = GetMostPopularItems(volume, price, client, config.BaseUrlSellers);
@@ -42,7 +43,7 @@ public class MergeBuyerSeller
             foreach (var item in items.Items)
             {
                 var name = item.MarketHashName;
-                Thread.Sleep(config.TimeSleep);
+                Thread.Sleep(TimeSpan.FromMilliseconds(config.TimeSleep * new Random().NextDouble() + config.TimeSleep * 0.9));
                 var buyerItem = await GetItemsByNameFromBuyer(name, client, config.BaseUrlBuyers);
                 ConsoleWriter.SimulateLoadingBarV2(count, counter);
                 counter++;
@@ -58,8 +59,9 @@ public class MergeBuyerSeller
                 productList.Add(new Product
                 {
                     Name = item.MarketHashName,
-                    PriceYuan = ChangeDoteOnComme(buyerItem.Price),
-                    PriceRub = ChangeDoteOnComme(item.Price),
+                    PriceYuanBuyer = ChangeDoteOnComme(buyerItem.Price),
+                    PriceRubBuyer = ChangeDoteOnComme(TryParsePriceToRub(buyerItem.Price, yuanToRub)),
+                    PriceRubSeller = ChangeDoteOnComme(item.Price),
                     CoefficientBenefit = TryParseCoefficient(buyerItem.Price, item.Price, yuanToRub),
                     Volume = item.Volume,
                     UrlBuy = buyerUrl,
@@ -71,8 +73,17 @@ public class MergeBuyerSeller
         }
         catch (Exception ex)
         {
-            throw new Exception($"{ex.Message}", ex);
+            throw new Exception($"{op}: {ex.Message}", ex);
         }
+    }
+    
+    private static string TryParsePriceToRub(string price, float yuanToRub)
+    {
+        if (float.TryParse(price, NumberStyles.Float, CultureInfo.InvariantCulture, out float parsedPrice))
+        {
+            return (parsedPrice * yuanToRub).ToString(CultureInfo.InvariantCulture);
+        }
+        return "0";
     }
     
     public static string ChangeDoteOnComme(string price)
@@ -85,6 +96,10 @@ public class MergeBuyerSeller
         if (float.TryParse(buyerPrice, NumberStyles.Float, CultureInfo.InvariantCulture, out float parsedBuyerPrice) &&
             float.TryParse(sellerPrice, NumberStyles.Float, CultureInfo.InvariantCulture, out float parsedSellerPrice))
         {
+            if (parsedBuyerPrice == 0 || parsedSellerPrice == 0)
+            {
+                return "0";
+            }
             return (parsedSellerPrice / (yuanToRub * parsedBuyerPrice)).ToString(new CultureInfo("ru-RU"));
         }
         return "0"; 

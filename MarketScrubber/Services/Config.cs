@@ -7,13 +7,14 @@ public class Config
     public string Cookies { get; set; }
     public string BaseUrlBuyers { get; set; }
     public string BaseUrlSellers { get; set; }
-
     public int TimeSleep { get; set; } = 500;
+
+    private const string PathConfig = "../config/appsettings.json";
     public static Config GetConfig()
     {
         try
         {
-            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "./cookies.json");
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, PathConfig);
             var config =  File.ReadAllText(path);
             var cookiesConfig = JsonSerializer.Deserialize<Config>(config);
 
